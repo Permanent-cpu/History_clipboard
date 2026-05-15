@@ -4,9 +4,9 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QApplication, QMenu,
 )
-from storage import Storage
-from models import ClipItem
-from utils import format_time
+from main.storage import Storage
+from main.models import ClipItem
+from main.utils import format_time
 
 
 class MainWindow(QWidget):
@@ -105,6 +105,11 @@ class MainWindow(QWidget):
             clipboard = QApplication.clipboard()
             if target.content_type in ("text", "html"):
                 clipboard.setText(target.content)
+            elif target.content_type == "image":
+                from PySide6.QtGui import QPixmap
+                pixmap = QPixmap(target.content)
+                if not pixmap.isNull():
+                    clipboard.setPixmap(pixmap)
             elif target.content_type == "files":
                 from PySide6.QtCore import QUrl
                 from PySide6.QtGui import QMimeData

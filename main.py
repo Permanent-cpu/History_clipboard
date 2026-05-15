@@ -1,10 +1,10 @@
 import sys
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon, QPixmap, QPainter, QColor
-from storage import Storage
-from clipboard_monitor import ClipboardMonitor
-from main_window import MainWindow
-from tray_manager import TrayManager
+from main.storage import Storage
+from main.clipboard_monitor import ClipboardMonitor
+from main.main_window import MainWindow
+from main.tray_manager import TrayManager
 
 
 def _make_tray_icon() -> QIcon:

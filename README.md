@@ -1,33 +1,64 @@
 # History_pasteboard
 
-运行于 Windows 系统的轻量级剪贴板历史管理工具。
+A lightweight clipboard history manager for Windows. Runs in the system tray and automatically records every clipboard change.
 
-## 技术栈
-- Python 3.13 + PySide6
-- SQLite 存储剪贴板历史
-- 定时轮询检测剪贴板变化（500ms）
+## Features
 
-## 运行方式
-```
+- **Auto-record** — monitors clipboard and saves text, HTML, images, and file paths
+- **Image support** — saves clipboard images as PNG and restores them on click
+- **Instant paste** — click any entry to copy it back to the clipboard
+- **Timestamps** — shows relative time (e.g. "2 min ago", "3 hours ago")
+- **Delete & clear** — right-click to delete single items, button to clear all
+- **System tray** — runs in the background, double-click to show window
+- **Deduplication** — skips duplicate consecutive entries
+- **Auto-cleanup** — keeps the latest 500 items, removes oldest automatically
+
+## Requirements
+
+- Windows 10/11
+- Python 3.13+
+
+## Quick Start
+
+```bash
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run
 python main.py
 ```
 
-## 项目结构
+## Project Structure
+
 ```
-main.py              # 程序入口
-clipboard_monitor.py # 剪贴板监听
-storage.py           # SQLite 数据库操作
-main_window.py       # 主窗口 UI
-tray_manager.py      # 系统托盘
-utils.py             # 工具函数
-models.py            # ClipItem 数据模型
-data/                # 数据库和图片缓存
+History_pasteboard/
+├── main.py                       # Entry point
+├── main/                         # Core package
+│   ├── clipboard_monitor.py      # Clipboard polling & change detection
+│   ├── storage.py                # SQLite database operations
+│   ├── main_window.py            # Main window UI (list, delete, copy)
+│   ├── tray_manager.py           # System tray icon & menu
+│   ├── utils.py                  # Time formatting & preview helpers
+│   └── models.py                 # ClipItem data model
+├── requirements.txt              # PySide6 dependency
+├── installer.iss                 # Inno Setup installer script
+└── data/                         # Runtime data (SQLite DB, cached images)
 ```
 
-## 功能
-- 自动记录文本/HTML/图片/文件路径到历史
-- 主窗口显示历史列表（预览 + 时间）
-- 点击条目复制到剪贴板
-- 右键删除单条 / 清空全部
-- 系统托盘常驻后台
-- 历史上限 500 条自动清理
+## Build Installer
+
+```bash
+# Step 1: Build single exe with PyInstaller
+pyinstaller --onefile --windowed --name History_pasteboard main.py
+
+# Step 2: Compile installer with Inno Setup
+# Open installer.iss in Inno Setup Compiler -> Build -> Compile
+```
+
+## License
+
+MIT

@@ -1,12 +1,12 @@
 import sqlite3
 import os
 from datetime import datetime
-from models import ClipItem
-from utils import make_preview
+from main.models import ClipItem
+from main.utils import make_preview
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "history.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "history.db")
 MAX_ITEMS = 500
-IMAGE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "images")
+IMAGE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "images")
 
 
 class Storage:
@@ -44,6 +44,18 @@ class Storage:
         )
         self.conn.commit()
 
+        # clean up image files for items about to be deleted
+        old_rows = self.conn.execute(
+            "SELECT id, content FROM clipboard_history WHERE content_type = 'image' AND id NOT IN (SELECT id FROM clipboard_history ORDER BY id DESC LIMIT ?)",
+            (MAX_ITEMS,),
+        ).fetchall()
+        for row in old_rows:
+            if os.path.isfile(row["content"]):
+                try:
+                    os.remove(row["content"])
+                except OSError:
+                    pass
+
         # enforce max items
         self.conn.execute(
             "DELETE FROM clipboard_history WHERE id NOT IN (SELECT id FROM clipboard_history ORDER BY id DESC LIMIT ?)",
@@ -72,14 +84,30 @@ class Storage:
         return [self._row_to_item(r) for r in rows]
 
     def delete_item(self, item_id: int):
+        self._delete_image_file(item_id)
         self.conn.execute(
             "DELETE FROM clipboard_history WHERE id = ?", (item_id,)
         )
         self.conn.commit()
 
     def clear_all(self):
+        rows = self.conn.execute(
+            "SELECT id FROM clipboard_history WHERE content_type = 'image'"
+        ).fetchall()
+        for row in rows:
+            self._delete_image_file(row["id"])
         self.conn.execute("DELETE FROM clipboard_history")
         self.conn.commit()
+
+    def _delete_image_file(self, item_id: int):
+        row = self.conn.execute(
+            "SELECT content FROM clipboard_history WHERE id = ?", (item_id,)
+        ).fetchone()
+        if row and os.path.isfile(row["content"]):
+            try:
+                os.remove(row["content"])
+            except OSError:
+                pass
 
     def count(self) -> int:
         row = self.conn.execute("SELECT COUNT(*) as cnt FROM clipboard_history").fetchone()
