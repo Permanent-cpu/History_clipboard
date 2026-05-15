@@ -54,13 +54,17 @@ History_pasteboard/
 └── data/                         # Runtime data (SQLite DB, cached images) — gitignored
 ```
 
-## Build Installer
+## Install
+
+Download the latest `History_pasteboard_Setup_*.exe` from [Releases](https://github.com/Permanent-cpu/History_pasteboard/releases) and run it. The app installs to `%LOCALAPPDATA%\History_pasteboard` and optionally adds a desktop shortcut and auto-start entry.
+
+## Build from Source
 
 Requires Python 3.13+, PyInstaller, and [Inno Setup 6](https://jrsoftware.org/isinfo.php).
 
 ```bash
-# Step 1: Build single exe
-pyinstaller History_pasteboard.spec
+# Step 1: Build single exe (use --clean to avoid stale cache)
+pyinstaller --clean History_pasteboard.spec
 
 # Step 2: Open installer.iss in Inno Setup Compiler → Build → Compile
 ```
