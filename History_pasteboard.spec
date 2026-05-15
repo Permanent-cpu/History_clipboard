@@ -2,10 +2,16 @@
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
+    pathex=['.'],
     binaries=[],
     datas=[],
     hiddenimports=[
+        'main.storage',
+        'main.clipboard_monitor',
+        'main.main_window',
+        'main.tray_manager',
+        'main.models',
+        'main.utils',
         'PySide6.QtCore',
         'PySide6.QtGui',
         'PySide6.QtWidgets',
