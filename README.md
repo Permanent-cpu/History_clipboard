@@ -56,13 +56,16 @@ History_pasteboard/
 
 ## Build Installer
 
+Requires Python 3.13+, PyInstaller, and [Inno Setup 6](https://jrsoftware.org/isinfo.php).
+
 ```bash
 # Step 1: Build single exe
-pyinstaller --onefile --windowed --name History_pasteboard main.py
+pyinstaller History_pasteboard.spec
 
-# Step 2: Compile installer with Inno Setup
-# Open installer.iss → Build → Compile
+# Step 2: Open installer.iss in Inno Setup Compiler → Build → Compile
 ```
+
+The installer will be at `History_pasteboard_Setup_1.0.exe`.
 
 ## Deduplication Logic
 
