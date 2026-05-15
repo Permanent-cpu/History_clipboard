@@ -47,11 +47,11 @@ class ClipboardMonitor(QObject):
         elif mime.hasImage():
             img = mime.imageData()
             if img:
-                ba = bytearray()
+                ba = QtCore.QByteArray()
                 buf = QtCore.QBuffer(ba)
                 buf.open(QtCore.QBuffer.OpenModeFlag.WriteOnly)
                 img.save(buf, "PNG")
-                return hashlib.md5(ba).hexdigest()
+                return hashlib.md5(ba.data()).hexdigest()
             return None
         elif mime.hasUrls():
             urls = "\n".join([u.toLocalFile() for u in mime.urls()])
